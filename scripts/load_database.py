@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 from sqlalchemy import create_engine, text
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
+#  Paths 
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROC_DIR = BASE_DIR / "data" / "processed"
 DB_DIR   = BASE_DIR / "data" / "db"
@@ -18,9 +18,9 @@ DB_PATH  = DB_DIR / "bluestock_mf.db"
 engine   = create_engine(f"sqlite:///{DB_PATH}", echo=False)
 
 
-# ════════════════════════════════════════════════════════════════════════════
+
 # STEP 1 — Create star schema tables
-# ════════════════════════════════════════════════════════════════════════════
+
 print("\n" + "█"*65)
 print("  STEP 1 — Creating SQLite star schema")
 print("█"*65 + "\n")

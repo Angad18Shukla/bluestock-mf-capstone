@@ -31,7 +31,7 @@ from scipy import stats
 
 warnings.filterwarnings("ignore")
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
+# Paths 
 ROOT      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW       = os.path.join(ROOT, "data", "raw")
 PROCESSED = os.path.join(ROOT, "data", "processed")
@@ -39,15 +39,15 @@ REPORTS   = os.path.join(ROOT, "reports")
 os.makedirs(PROCESSED, exist_ok=True)
 os.makedirs(REPORTS,   exist_ok=True)
 
-# ── Constants ─────────────────────────────────────────────────────────────────
+#  Constants 
 RF_ANNUAL   = 0.065          # Risk-free rate: 6.5% (RBI repo rate proxy)
 RF_DAILY    = RF_ANNUAL / 252
 TRADING_DAYS = 252
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+
 # SECTION 0 — Load & prepare data
-# ══════════════════════════════════════════════════════════════════════════════
+
 def load_data():
     print("\n" + "═"*65)
     print("  LOADING DATA")
@@ -70,9 +70,9 @@ def load_data():
     return nav, fm, bi
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+
 # TASK 1 — Daily Returns
-# ══════════════════════════════════════════════════════════════════════════════
+
 def compute_daily_returns(nav: pd.DataFrame) -> pd.DataFrame:
     """
     daily_return = (nav_t / nav_t-1) - 1
@@ -105,14 +105,14 @@ def compute_daily_returns(nav: pd.DataFrame) -> pd.DataFrame:
     # Sanity check — no return should be > 50% or < -50% in a day
     extreme = returns[returns["daily_return"].abs() > 0.5]
     if len(extreme) == 0:
-        print(f"  ✅  No extreme daily returns (>50%) found — distribution looks reasonable")
+        print(f"    No extreme daily returns (>50%) found — distribution looks reasonable")
     else:
-        print(f"  ⚠️   {len(extreme)} extreme returns found — investigate:")
+        print(f"     {len(extreme)} extreme returns found — investigate:")
         print(extreme[["amfi_code","date","nav","daily_return"]].to_string())
 
     out_path = os.path.join(PROCESSED, "returns_computed.csv")
     returns.to_csv(out_path, index=False)
-    print(f"  ✅  Saved: returns_computed.csv  ({len(returns):,} rows)")
+    print(f"    Saved: returns_computed.csv  ({len(returns):,} rows)")
 
     return returns
 
@@ -211,7 +211,7 @@ def compute_cagr(nav: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
 
     out_path = os.path.join(PROCESSED, "cagr_report.csv")
     cagr_df.to_csv(out_path, index=False)
-    print(f"\n  ✅  Saved: cagr_report.csv")
+    print(f"\n   Saved: cagr_report.csv")
     print(f"  Note: 5yr CAGR is NaN — dataset starts Jan 2022 (only ~4.4 yrs available)")
 
     return cagr_df
@@ -275,7 +275,7 @@ def compute_sharpe(returns: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
 
     out_path = os.path.join(PROCESSED, "sharpe_values.csv")
     sharpe_df.to_csv(out_path, index=False)
-    print(f"\n  ✅  Saved: sharpe_values.csv")
+    print(f"\n   Saved: sharpe_values.csv")
 
     return sharpe_df
 
@@ -338,7 +338,7 @@ def compute_sortino(returns: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
 
     out_path = os.path.join(PROCESSED, "sortino_values.csv")
     sortino_df.to_csv(out_path, index=False)
-    print(f"\n  ✅  Saved: sortino_values.csv")
+    print(f"\n    Saved: sortino_values.csv")
 
     return sortino_df
 
@@ -381,7 +381,7 @@ def compute_alpha_beta(returns: pd.DataFrame, bi: pd.DataFrame, fm: pd.DataFrame
         ).dropna()
 
         if len(merged) < 60:        # need at least 60 trading days for reliable regression
-            print(f"  ⚠️   {code}: only {len(merged)} matching days — skipping")
+            print(f"     {code}: only {len(merged)} matching days — skipping")
             continue
 
         x = merged["bm_return"].values
@@ -433,7 +433,7 @@ def compute_alpha_beta(returns: pd.DataFrame, bi: pd.DataFrame, fm: pd.DataFrame
 
     out_path = os.path.join(PROCESSED, "alpha_beta.csv")
     alpha_beta_df.to_csv(out_path, index=False)
-    print(f"\n  ✅  Saved: alpha_beta.csv")
+    print(f"\n   Saved: alpha_beta.csv")
 
     return alpha_beta_df
 
@@ -519,7 +519,7 @@ def compute_max_drawdown(nav: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
 
     out_path = os.path.join(PROCESSED, "max_drawdown.csv")
     dd_df.to_csv(out_path, index=False)
-    print(f"\n  ✅  Saved: max_drawdown.csv")
+    print(f"\n    Saved: max_drawdown.csv")
 
     return dd_df
 
@@ -617,7 +617,7 @@ def build_fund_scorecard(cagr_df, sharpe_df, alpha_beta_df, dd_df, fm) -> pd.Dat
 
     out_path = os.path.join(PROCESSED, "fund_scorecard.csv")
     scorecard.to_csv(out_path, index=False)
-    print(f"\n  ✅  Saved: fund_scorecard.csv")
+    print(f"\n    Saved: fund_scorecard.csv")
 
     return scorecard
 
@@ -754,7 +754,7 @@ def plot_benchmark_comparison(nav: pd.DataFrame, bi: pd.DataFrame,
     out_path = os.path.join(REPORTS, "benchmark_chart.png")
     plt.savefig(out_path, dpi=150, bbox_inches="tight", facecolor="#0f1117")
     plt.close()
-    print(f"  ✅  Saved: benchmark_chart.png")
+    print(f"   Saved: benchmark_chart.png")
 
     # Print tracking errors
     if tracking_errors:

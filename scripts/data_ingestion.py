@@ -7,11 +7,11 @@ Day 1: Load all 10 CSV datasets, explore, and validate AMFI codes
 from pathlib import Path
 import pandas as pd
 
-# ── Paths ────────────────────────────────────────────────────────────────────
+#  Paths 
 BASE_DIR  = Path(__file__).resolve().parent.parent   # project root
 RAW_DIR   = BASE_DIR / "data" / "raw"
 
-# ── File map ─────────────────────────────────────────────────────────────────
+#  File map 
 FILES = {
     "fund_master"          : "01_fund_master.csv",
     "nav_history"          : "02_nav_history.csv",
@@ -25,7 +25,7 @@ FILES = {
     "benchmark_indices"    : "10_benchmark_indices.csv",
 }
 
-# ── Helper ────────────────────────────────────────────────────────────────────
+#  Helper
 def load_and_inspect(name: str, filename: str) -> pd.DataFrame:
     """Load one CSV and print shape / dtypes / head."""
     path = RAW_DIR / filename
@@ -45,17 +45,17 @@ def load_and_inspect(name: str, filename: str) -> pd.DataFrame:
     return df
 
 
-# ── 1. Load all 10 files ──────────────────────────────────────────────────────
-print("\n" + "█" * 65)
+# 1. Load all 10 files
+print("\n" + " " * 65)
 print("  STEP 1 — Loading all 10 CSV datasets")
-print("█" * 65 + "\n")
+print(" " * 65 + "\n")
 
 dataframes = {}
 for name, filename in FILES.items():
     dataframes[name] = load_and_inspect(name, filename)
 
 
-# ── 2. Explore fund_master ────────────────────────────────────────────────────
+# 2. Explore fund_master 
 print("\n" + "█" * 65)
 print("  STEP 2 — Exploring fund_master")
 print("█" * 65 + "\n")
@@ -83,10 +83,10 @@ print(f"\n  Expense ratio range: "
       f"{fm['expense_ratio_pct'].min():.2f}% — {fm['expense_ratio_pct'].max():.2f}%")
 
 
-# ── 3. Validate AMFI codes ────────────────────────────────────────────────────
-print("\n" + "█" * 65)
+#  3. Validate AMFI codes 
+print("\n" + " " * 65)
 print("  STEP 3 — Validating AMFI codes (fund_master vs nav_history)")
-print("█" * 65 + "\n")
+print(" " * 65 + "\n")
 
 nav = dataframes["nav_history"]
 
@@ -111,10 +111,10 @@ else:
     print("    ✓ None — nav_history has no unexpected codes")
 
 
-# ── 4. Quick data quality summary ────────────────────────────────────────────
-print("\n" + "█" * 65)
+#  4. Quick data quality summary 
+print("\n" + " " * 65)
 print("  STEP 4 — Data quality summary across all files")
-print("█" * 65 + "\n")
+print(" " * 65 + "\n")
 
 print(f"  {'Dataset':<30} {'Rows':>7}  {'Cols':>5}  {'Total nulls':>12}")
 print(f"  {'-'*30} {'-'*7}  {'-'*5}  {'-'*12}")
@@ -122,4 +122,4 @@ for name, df in dataframes.items():
     total_nulls = df.isnull().sum().sum()
     print(f"  {name:<30} {df.shape[0]:>7}  {df.shape[1]:>5}  {total_nulls:>12}")
 
-print("\n✅  Day 1 — data_ingestion.py complete!\n")
+print("\n  Day 1 — data_ingestion.py complete!\n")

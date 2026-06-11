@@ -27,7 +27,7 @@ import matplotlib.dates as mdates
 
 warnings.filterwarnings("ignore")
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
+#  Paths
 ROOT      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW       = os.path.join(ROOT, "data", "raw")
 PROCESSED = os.path.join(ROOT, "data", "processed")
@@ -38,7 +38,7 @@ os.makedirs(REPORTS,   exist_ok=True)
 TRADING_DAYS = 252
 RF_DAILY     = 0.065 / TRADING_DAYS   # 6.5% annual → daily
 
-# ── Dark chart style (consistent with Day 4) ──────────────────────────────────
+#  Dark chart style (consistent with Day 4) 
 BG    = "#0f1117"
 GRID  = "#1e1e2e"
 TEXT  = "#e0e0e0"
@@ -58,9 +58,8 @@ def dark_ax(ax):
     return ax
 
 
-# ══════════════════════════════════════════════════════════════════════════════
 # TASK 1 — Historical VaR (95%) and CVaR
-# ══════════════════════════════════════════════════════════════════════════════
+
 def compute_var_cvar(nav: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
     """
     Historical VaR (95%):
@@ -130,7 +129,7 @@ def compute_var_cvar(nav: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
     var_df["var_rank"] = var_df["var_95_pct"].rank(ascending=False).astype(int)
     var_df = var_df.sort_values("var_95_pct", ascending=False)
 
-    # ── Print table ───────────────────────────────────────────────────────────
+    #  Print table 
     print(f"\n  VaR & CVaR Report — all 40 funds (sorted: safest → riskiest)")
     print(f"\n  {'Fund':<44} {'VaR 95%':>8} {'CVaR 95%':>9} {'Ann.Vol%':>9} {'Kurt':>6}")
     print(f"  {'─'*44} {'─'*8} {'─'*9} {'─'*9} {'─'*6}")
@@ -141,7 +140,7 @@ def compute_var_cvar(nav: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
               f"{row['ann_vol_pct']:>8.2f}% "
               f"{row['excess_kurtosis']:>6.2f}")
 
-    # ── Key insights ──────────────────────────────────────────────────────────
+    #  Key insights 
     riskiest  = var_df.iloc[-1]   # most negative VaR
     safest    = var_df.iloc[0]    # least negative VaR
     fat_tail  = var_df.loc[var_df["excess_kurtosis"].idxmax()]
@@ -156,9 +155,9 @@ def compute_var_cvar(nav: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
     return var_df
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+
 # TASK 2 — Rolling 90-Day Sharpe Ratio
-# ══════════════════════════════════════════════════════════════════════════════
+
 def compute_rolling_sharpe(nav: pd.DataFrame, fm: pd.DataFrame) -> None:
     """
     Rolling 90-day Sharpe:
@@ -203,7 +202,7 @@ def compute_rolling_sharpe(nav: pd.DataFrame, fm: pd.DataFrame) -> None:
     )
     fig.patch.set_facecolor(BG)
 
-    # ── Main chart: Rolling Sharpe lines ──────────────────────────────────────
+    # Main chart: Rolling Sharpe lines 
     dark_ax(ax_main)
     ax_main.axhline(0,   color=MUTED, linewidth=0.8, linestyle="--", alpha=0.6)
     ax_main.axhline(1.0, color="#ffd93d", linewidth=0.6, linestyle=":", alpha=0.5)
@@ -239,7 +238,7 @@ def compute_rolling_sharpe(nav: pd.DataFrame, fm: pd.DataFrame) -> None:
     ax_main.xaxis.set_major_locator(mdates.MonthLocator(interval=6))
     plt.setp(ax_main.xaxis.get_majorticklabels(), rotation=30, ha="right", color=TEXT)
 
-    # ── Sub chart: Sharpe distribution (violin-like histogram) ────────────────
+    #  Sub chart: Sharpe distribution (violin-like histogram)
     dark_ax(ax_sub)
     ax_sub.axhline(0, color=MUTED, linewidth=0.6, linestyle="--", alpha=0.5)
 
@@ -267,9 +266,9 @@ def compute_rolling_sharpe(nav: pd.DataFrame, fm: pd.DataFrame) -> None:
     print(f"\n  ✅  Saved: rolling_sharpe_chart.png")
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+
 # TASK 3 — Investor Cohort Analysis
-# ══════════════════════════════════════════════════════════════════════════════
+
 def cohort_analysis(tx: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
     """
     Cohort = group of investors who made their FIRST transaction in the same year.
@@ -340,7 +339,7 @@ def cohort_analysis(tx: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
 
     cohort_df = pd.DataFrame(cohort_records)
 
-    # ── Print cohort comparison ────────────────────────────────────────────────
+    # Print cohort comparison 
     print(f"\n  COHORT COMPARISON TABLE:")
     print(f"  {'Cohort':<10} {'Investors':>10} {'Avg SIP ₹':>12} {'Total Cr':>10} {'KYC%':>7} {'Avg Inc L':>10}")
     print(f"  {'─'*10} {'─'*10} {'─'*12} {'─'*10} {'─'*7} {'─'*10}")
@@ -364,9 +363,9 @@ def cohort_analysis(tx: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
     return cohort_df
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+
 # TASK 4 — SIP Continuity Analysis
-# ══════════════════════════════════════════════════════════════════════════════
+
 def sip_continuity(tx: pd.DataFrame) -> pd.DataFrame:
     """
     SIP Continuity = how regularly does an investor make their SIP payments?
@@ -429,7 +428,7 @@ def sip_continuity(tx: pd.DataFrame) -> pd.DataFrame:
 
     cont_df = pd.DataFrame(records)
 
-    # ── Summary stats ─────────────────────────────────────────────────────────
+    #  Summary stats 
     n_at_risk      = cont_df["at_risk"].sum()
     n_regular      = (~cont_df["at_risk"]).sum()
     at_risk_pct    = n_at_risk / len(cont_df) * 100
@@ -463,9 +462,9 @@ def sip_continuity(tx: pd.DataFrame) -> pd.DataFrame:
     return cont_df
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+
 # TASK 6 — Sector HHI Concentration
-# ══════════════════════════════════════════════════════════════════════════════
+
 def sector_hhi(port: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
     """
     Herfindahl-Hirschman Index (HHI):
@@ -543,7 +542,7 @@ def sector_hhi(port: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
     hhi_df["hhi"]           = hhi_df["hhi"].round(2)
     hhi_df = hhi_df.sort_values("hhi", ascending=False).reset_index(drop=True)
 
-    # ── Print table ───────────────────────────────────────────────────────────
+    #  Print table 
     print(f"\n  SECTOR HHI TABLE (most → least concentrated):")
     print(f"\n  {'Fund':<44} {'HHI':>7} {'Sectors':>8} {'Dominant Sector':<20} {'Label'}")
     print(f"  {'─'*44} {'─'*7} {'─'*8} {'─'*20} {'─'*13}")
@@ -554,7 +553,7 @@ def sector_hhi(port: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
               f"{str(row['dominant_sector']):<20} "
               f"{row['concentration']}")
 
-    # ── Chart ─────────────────────────────────────────────────────────────────
+    #  Chart 
     fig, ax = plt.subplots(figsize=(12, 10), facecolor=BG)
     dark_ax(ax)
 
@@ -596,17 +595,16 @@ def sector_hhi(port: pd.DataFrame, fm: pd.DataFrame) -> pd.DataFrame:
     chart_out = os.path.join(REPORTS, "sector_hhi_chart.png")
     plt.savefig(chart_out, dpi=150, bbox_inches="tight", facecolor=BG)
     plt.close()
-    print(f"\n  ✅  Saved: sector_hhi_chart.png")
+    print(f"\n    Saved: sector_hhi_chart.png")
 
     out = os.path.join(PROCESSED, "sector_hhi.csv")
     hhi_df.to_csv(out, index=False)
-    print(f"  ✅  Saved: sector_hhi.csv")
+    print(f"    Saved: sector_hhi.csv")
     return hhi_df
 
 
-# ══════════════════════════════════════════════════════════════════════════════
 # MAIN
-# ══════════════════════════════════════════════════════════════════════════════
+
 def main():
     print("\n" + "═" * 65)
     print("  BLUESTOCK FINTECH — DAY 6: ADVANCED ANALYTICS")

@@ -21,12 +21,12 @@ def save(df: pd.DataFrame, filename: str):
     print(f"  💾 Saved → data/processed/{filename}  ({len(df)} rows)")
 
 
-# ════════════════════════════════════════════════════════════════════════════
+
 # TASK 1 — Clean nav_history.csv
-# ════════════════════════════════════════════════════════════════════════════
-print("\n" + "█"*65)
+ 
+print("\n" + " "*65)
 print("  TASK 1 — Cleaning nav_history.csv")
-print("█"*65)
+print(" "*65)
 
 nav = pd.read_csv(RAW_DIR / "02_nav_history.csv")
 print(f"\n  Raw shape : {nav.shape}")
@@ -80,12 +80,12 @@ print(f"  Unique schemes     : {nav_filled['amfi_code'].nunique()}")
 save(nav_filled, "clean_nav.csv")
 
 
-# ════════════════════════════════════════════════════════════════════════════
+
 # TASK 2 — Clean investor_transactions.csv
-# ════════════════════════════════════════════════════════════════════════════
-print("\n" + "█"*65)
+
+print("\n" + " "*65)
 print("  TASK 2 — Cleaning investor_transactions.csv")
-print("█"*65)
+print(" "*65)
 
 txn = pd.read_csv(RAW_DIR / "08_investor_transactions.csv")
 print(f"\n  Raw shape : {txn.shape}")
@@ -130,12 +130,11 @@ print(f"  KYC status counts : {txn['kyc_status'].value_counts().to_dict()}")
 save(txn, "clean_transactions.csv")
 
 
-# ════════════════════════════════════════════════════════════════════════════
 # TASK 3 — Clean scheme_performance.csv
-# ════════════════════════════════════════════════════════════════════════════
-print("\n" + "█"*65)
+
+print("\n" + " "*65)
 print("  TASK 3 — Cleaning scheme_performance.csv")
-print("█"*65)
+print(" "*65)
 
 perf = pd.read_csv(RAW_DIR / "07_scheme_performance.csv")
 print(f"\n  Raw shape : {perf.shape}")
@@ -177,12 +176,12 @@ print(f"  Expense ratio range : {perf['expense_ratio_pct'].min():.2f}% – {perf
 save(perf, "clean_performance.csv")
 
 
-# ════════════════════════════════════════════════════════════════════════════
+
 # TASK 4 — Clean remaining 7 CSVs (minimal cleaning needed)
-# ════════════════════════════════════════════════════════════════════════════
-print("\n" + "█"*65)
+
+print("\n" + " "*65)
 print("  TASK 4 — Cleaning remaining datasets")
-print("█"*65 + "\n")
+print(" "*65 + "\n")
 
 # fund_master
 fm = pd.read_csv(RAW_DIR / "01_fund_master.csv")
@@ -233,4 +232,4 @@ bench.sort_values(["index_name", "date"], inplace=True)
 bench.reset_index(drop=True, inplace=True)
 save(bench, "clean_benchmark_indices.csv")
 
-print("\n✅  data_cleaning.py complete — all 10 cleaned CSVs in data/processed/\n")
+print("\n  data_cleaning.py complete — all 10 cleaned CSVs in data/processed/\n")

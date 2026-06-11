@@ -9,12 +9,12 @@ import requests
 import pandas as pd
 import time
 
-# ── Output folder ─────────────────────────────────────────────────────────────
+#  Output folder
 BASE_DIR = Path(__file__).resolve().parent.parent   # project root
 RAW_DIR  = BASE_DIR / "data" / "raw"
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 
-# ── Schemes to fetch ──────────────────────────────────────────────────────────
+#  Schemes to fetch 
 SCHEMES = {
     125497: "HDFC Top 100 Direct",
     119551: "SBI Bluechip Regular",
@@ -26,7 +26,7 @@ SCHEMES = {
 
 BASE_URL = "https://api.mfapi.in/mf/{code}"
 
-# ── Fetch function ────────────────────────────────────────────────────────────
+#  Fetch function 
 def fetch_nav(amfi_code: int, scheme_name: str) -> pd.DataFrame | None:
     """
     Call mfapi.in for one scheme code.
@@ -75,11 +75,11 @@ def fetch_nav(amfi_code: int, scheme_name: str) -> pd.DataFrame | None:
         return None
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
-print("\n" + "█" * 65)
+#  Main 
+print("\n" + " " * 65)
 print("  STEP 1 — Fetching live NAV from mfapi.in")
 print("  API: https://api.mfapi.in/mf/{code}   (no auth required)")
-print("█" * 65 + "\n")
+print(" " * 65 + "\n")
 
 all_dfs = []
 
@@ -94,7 +94,7 @@ for code, name in SCHEMES.items():
     time.sleep(0.5)   # be polite to the free API — small delay between calls
 
 
-# ── Combine all into one file ─────────────────────────────────────────────────
+#  Combine all into one file 
 if all_dfs:
     combined = pd.concat(all_dfs, ignore_index=True)
     combined_path = RAW_DIR / "nav_live_all_schemes.csv"
@@ -112,4 +112,4 @@ if all_dfs:
 else:
     print("⚠  No data fetched. Check internet connection and try again.")
 
-print("\n✅  Day 1 — live_nav_fetch.py complete!\n")
+print("\n Day 1 — live_nav_fetch.py complete!\n")
